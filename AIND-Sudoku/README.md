@@ -3,11 +3,13 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: For the naked twins problem, we add the contraint that only naked twins (two boxs with the same two possible solutions) can contain those possible solutions. Within the Sudoku Solver, I enforce this contraint by identifying naked twins and removing those digits from the remaining boxes in that row, column, or 3x3 square (this also propagated to the diagonals after they were added).
+
+This contraint enables other contraints (elimination, only solution) by reducing the possible values in each box.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: For the Diagonal Sudoku problem, I utilized the existing constraints and strategies for rows, columns, and 3x3 squares (exactly one occurance of the digits 1-9 in each). I added the diagonals as units within the unit list and the existing constraints propagated to them.
 
 ### Install
 
@@ -36,7 +38,7 @@ To visualize your solution, please only assign values to the values_dict using t
 ### Submission
 Before submitting your solution to a reviewer, you are required to submit your project to Udacity's Project Assistant, which will provide some initial feedback.  
 
-The setup is simple.  If you have not installed the client tool already, then you may do so with the command `pip install udacity-pa`.  
+The setup is simple.  If you have not installed the client tool already, then you may do so with the command `pip install udacity-pa`.  x
 
 To submit your code to the project assistant, run `udacity submit` from within the top-level directory of this project.  You will be prompted for a username and password.  If you login using google or facebook, visit [this link](https://project-assistant.udacity.com/auth_tokens/jwt_login) for alternate login instructions.
 
