@@ -32,9 +32,9 @@ assignments = []
 rows = 'ABCDEFGHI'
 cols = '123456789'
 
-#lists of individual bokes
+#lists of individual boxes
 boxes = cross(rows, cols)
-#board units
+#sudoku board units
 row_units = [cross(r,cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs,cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
