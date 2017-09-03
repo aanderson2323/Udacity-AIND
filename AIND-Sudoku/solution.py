@@ -28,11 +28,13 @@ def display(values):
 # In[3]:
 
 assignments = []
-
+#Labels for sudoku board
 rows = 'ABCDEFGHI'
 cols = '123456789'
 
+#lists of individual bokes
 boxes = cross(rows, cols)
+#board units
 row_units = [cross(r,cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs,cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
@@ -40,9 +42,10 @@ square_units = [cross(rs,cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '
 #check for diagonal solution
 diagonal_units = [[rows[idx] + cols[idx] for idx in range(len(rows))],
     [rows[idx] + cols[-idx-1] for idx in range(len(rows))]]
-
+#list of all units
 unitlist = row_units + column_units + square_units + diagonal_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+#peer lookup dictionary, peer[box] is all boxes in same row, col, 3x3, or diagnoal
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 def assign_value(values, box, value):
@@ -71,8 +74,16 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    #compare twins regardless of order
+    
     def are_twins(a,b):
+        """Check if two box possible values are twins, ignore order.
+        Args:
+            a(string): possible values of current box
+            b(bool): possible values of peer box
+
+        Returns:
+            (Bool) True if the boxes contain exactly the same possible values, else False
+        """
         return set(a) == set(b)
     
     # Find all instances of naked twins
@@ -114,6 +125,16 @@ def grid_values(grid):
 # In[6]:
 
 def eliminate(values):
+    """Eliminate values from peers of each box with a single value.
+
+    Go through all the boxes, and whenever there is a box with a single value,
+    eliminate this value from the set of values of all its peers.
+
+    Args:
+        values: Sudoku in dictionary form.
+    Returns:
+        Resulting Sudoku in dictionary form after eliminating values.
+    """
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
         digit = values[box]
@@ -125,6 +146,16 @@ def eliminate(values):
 # In[7]:
 
 def only_choice(values):
+    """Finalize all values that are the only choice for a unit.
+
+    Go through all the units, and whenever there is a unit with a value
+    that only fits in one box, assign the value to this box.
+
+    Args: 
+        values: Sudoku in dictionary form.
+    Returns: 
+        Resulting Sudoku in dictionary form after filling in only choices.
+    """
     for unit in unitlist:
         for digit in '123456789':
             dplaces = [box for box in unit if digit in values[box]]
@@ -133,9 +164,18 @@ def only_choice(values):
     return values
 
 
-# In[8]:
+# In[9]:
 
 def reduce_puzzle(values):
+    """
+    Iterate eliminate() and only_choice(). If at some point, there is a box with no available values, return False.
+    If the sudoku is solved, return the sudoku.
+    If after an iteration of both functions, the sudoku remains the same, return the sudoku.
+    Args: 
+        A sudoku in dictionary form.
+    Return: 
+        The resulting sudoku in dictionary form.
+    """
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
@@ -156,9 +196,17 @@ def reduce_puzzle(values):
     return values
 
 
-# In[9]:
+# In[10]:
 
 def search(values):
+    """Depth first search of possible sudoku solutions. Choose a square with fewest possible solutions,
+        try a value and reduce recurisvely until solution is found or returns False for no solution
+    Args:
+        A sudoku in dictionary form
+    Returns:
+        solved sudoku in dictionary form or False
+    """
+
     # First, reduce the puzzle using the previous function
     values = reduce_puzzle(values)
     if values is False:
@@ -176,7 +224,7 @@ def search(values):
             return attempt
 
 
-# In[10]:
+# In[11]:
 
 def solve(grid):
     """
@@ -192,7 +240,7 @@ def solve(grid):
     return search(values)
 
 
-# In[11]:
+# In[12]:
 
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
@@ -206,4 +254,9 @@ if __name__ == '__main__':
         pass
     except:
         print('We could not visualize your board due to a pygame issue. Not a problem! It is not a requirement.')
+
+
+# In[ ]:
+
+
 
